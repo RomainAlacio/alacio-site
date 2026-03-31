@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alacio — Automatisation IA pour cliniques esthétiques</title>
+    <meta name="description" content="Alacio automatise les rappels WhatsApp de votre clinique esthétique. Réduisez vos no-shows de 30% dès le premier mois.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #F8F8F6;
+            --bg-white: #FFFFFF;
+            --accent: #4361ee;
+            --accent-hover: #3451d1;
+            --text: #0a0a0a;
+            --text-secondary: #666666;
+            --border: #E8E8E8;
+            --card-hover: #F0F4FF;
+            --badge-bg: #EEF2FF;
+            --footer-bg: #0a0a0a;
+            --footer-text: #cccccc;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ═══ NAV ═══ */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            height: 72px;
+            padding: 0 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-white);
+            border-bottom: 1px solid var(--border);
+            transition: box-shadow 0.35s ease;
+        }
+        nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
+        .nav-logo img { display: block; width: 160px; height: auto; }
+
+        /* ═══ BUTTONS ═══ */
+        .btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 14px 32px;
+            background: transparent;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+            text-decoration: none; border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px; font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s;
+            white-space: nowrap;
+        }
+        .btn:hover {
+            background: var(--accent); color: #fff;
+            box-shadow: 0 4px 16px rgba(67,97,238,0.3);
+            transform: translateY(-1px);
+        }
+
+        /* ═══ SECTIONS ═══ */
+        .section { padding: 100px 48px; }
+        .section-inner { max-width: 1120px; margin: 0 auto; }
+        .bg-warm  { background: var(--bg); }
+        .bg-white { background: var(--bg-white); }
+
+        .section-title {
+            font-size: clamp(28px, 4vw, 42px);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+            text-align: center;
+            color: var(--text);
+            margin-bottom: 0;
+        }
+        .section-line {
+            display: block;
+            width: 60px; height: 3px;
+            background: var(--accent);
+            margin: 16px auto 40px;
+            border: none;
+            border-radius: 2px;
+        }
+
+        /* ═══ FADE IN ═══ */
+        .fade-in {
+            opacity: 0; transform: translateY(28px);
+            transition: opacity 0.65s ease-out, transform 0.65s ease-out;
+        }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+        /* ═══ HERO ═══ */
+        .hero { padding-top: 170px; padding-bottom: 120px; text-align: center; }
+        .hero .section-inner { max-width: 860px; }
+        .hero-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: var(--badge-bg); color: var(--accent);
+            font-size: 13px; font-weight: 600;
+            border-radius: 100px;
+            margin-bottom: 28px;
+            letter-spacing: 0.01em;
+        }
+        .hero h1 {
+            font-size: clamp(30px, 5vw, 54px);
+            font-weight: 800; line-height: 1.12;
+            letter-spacing: -0.035em;
+            margin-bottom: 24px; color: var(--text);
+        }
+        .hero .subtitle {
+            font-size: clamp(16px, 2vw, 20px);
+            color: var(--text-secondary);
+            line-height: 1.7;
+            max-width: 680px;
+            margin: 0 auto 44px;
+        }
+
+        /* ═══ PROBLEME ═══ */
+        .probleme .section-inner { max-width: 760px; text-align: center; }
+        .probleme h2 {
+            font-size: clamp(26px, 4vw, 42px);
+            font-weight: 800; letter-spacing: -0.03em;
+            line-height: 1.15; margin-bottom: 0;
+        }
+        .probleme p {
+            font-size: 18px; color: var(--text-secondary); line-height: 1.8;
+        }
+
+        /* ═══ SOLUTION CARDS ═══ */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .card {
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px 32px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            transition: border-color 0.3s, transform 0.3s, background 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            background: var(--card-hover);
+            border-color: rgba(67,97,238,0.25);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+        .card-icon { width: 48px; height: 48px; color: var(--accent); margin-bottom: 24px; }
+        .card h3 { font-size: 20px; font-weight: 700; margin-bottom: 12px; color: var(--text); }
+        .card p  { font-size: 15px; color: var(--text-secondary); line-height: 1.75; }
+
+        /* ═══ RESULTATS ═══ */
+        .resultats-blue { background: var(--accent); padding: 100px 48px; }
+        .resultats-blue .section-title { color: #fff; }
+        .resultats-blue .section-line { background: rgba(255,255,255,0.4); }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 48px; text-align: center;
+        }
+        .stat-value {
+            font-size: clamp(56px, 8vw, 80px);
+            font-weight: 800; letter-spacing: -0.04em;
+            color: #fff; line-height: 1; margin-bottom: 14px;
+        }
+        .stat-label { font-size: 16px; color: rgba(255,255,255,0.8); line-height: 1.5; }
+
+        /* ═══ TRUST GRID ═══ */
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .trust-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 36px 28px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            transition: border-color 0.3s, transform 0.3s, background 0.3s, box-shadow 0.3s;
+        }
+        .trust-card:hover {
+            background: var(--card-hover);
+            border-color: rgba(67,97,238,0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+        .trust-icon { width: 40px; height: 40px; color: var(--accent); margin-bottom: 20px; }
+        .trust-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 10px; color: var(--text); }
+        .trust-card p  { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+
+        /* ═══ POURQUOI ═══ */
+        .pourquoi .section-inner { max-width: 720px; text-align: center; }
+        .pourquoi p { font-size: 18px; color: var(--text-secondary); line-height: 1.85; }
+
+        /* ═══ ETAPES ═══ */
+        .etapes-list {
+            display: flex; flex-direction: column;
+            gap: 48px; max-width: 660px; margin: 0 auto;
+        }
+        .etape { display: flex; gap: 28px; align-items: flex-start; }
+        .etape-num {
+            flex-shrink: 0; width: 52px; height: 52px;
+            background: var(--accent); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; font-weight: 700; color: #fff;
+        }
+        .etape-body h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+        .etape-body p  { font-size: 15px; color: var(--text-secondary); line-height: 1.75; }
+
+        /* ═══ POUR QUI ═══ */
+        .pour-qui .section-inner { max-width: 720px; text-align: center; }
+        .pour-qui h2 {
+            font-size: clamp(26px, 4vw, 40px);
+            font-weight: 800; letter-spacing: -0.03em;
+            line-height: 1.15; margin-bottom: 0; color: var(--text);
+        }
+        .pour-qui p { font-size: 18px; color: var(--text-secondary); line-height: 1.85; }
+
+        /* ═══ PARTENAIRE ═══ */
+        .partenaire .section-inner { max-width: 1120px; }
+        .partenaire-content { max-width: 55%; }
+        .partenaire-content h2 {
+            font-size: clamp(26px, 3.5vw, 38px);
+            font-weight: 800; letter-spacing: -0.03em;
+            line-height: 1.2; margin-bottom: 0; color: var(--text);
+            text-align: left;
+        }
+        .partenaire-content .section-line { margin: 16px 0 24px; }
+        .partenaire-content .partenaire-sub {
+            font-size: 17px; color: var(--text-secondary);
+            line-height: 1.7; margin-bottom: 36px;
+        }
+        .check-list { list-style: none; display: flex; flex-direction: column; gap: 18px; margin-bottom: 40px; }
+        .check-list li {
+            display: flex; gap: 14px; align-items: flex-start;
+            font-size: 15px; color: var(--text-secondary); line-height: 1.65;
+        }
+        .check-list li svg {
+            flex-shrink: 0; width: 22px; height: 22px; color: var(--accent);
+            margin-top: 2px;
+        }
+
+        /* ═══ FORMULAIRE ═══ */
+        .contact-section { text-align: center; }
+        .contact-section .section-title { margin-bottom: 0; }
+        .contact-subtitle {
+            font-size: 17px; color: var(--text-secondary);
+            line-height: 1.7; max-width: 540px;
+            margin: 0 auto 48px;
+        }
+        .form-wrap { max-width: 540px; margin: 0 auto; text-align: left; }
+        form { display: flex; flex-direction: column; gap: 16px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        input, textarea {
+            width: 100%; padding: 14px 18px;
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            border-radius: 8px; color: var(--text);
+            font-family: 'Inter', sans-serif; font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        input::placeholder, textarea::placeholder { color: #999; }
+        input:focus, textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(67,97,238,0.12);
+        }
+        textarea { resize: vertical; min-height: 110px; }
+        form .btn {
+            width: 100%; justify-content: center;
+            margin-top: 4px;
+        }
+
+        /* ═══ FOOTER ═══ */
+        footer {
+            background: var(--footer-bg);
+            padding: 56px 48px; text-align: center;
+        }
+        .footer-logo img {
+            width: 160px; height: auto;
+            filter: brightness(0) invert(1);
+            margin-bottom: 20px;
+        }
+        .footer-brand { font-size: 15px; font-weight: 600; margin-bottom: 12px; color: var(--footer-text); }
+        .footer-links { font-size: 14px; color: var(--footer-text); margin-bottom: 12px; }
+        .footer-links a { color: var(--footer-text); text-decoration: none; transition: color 0.2s; }
+        .footer-links a:hover { color: var(--accent); }
+        .footer-copy { font-size: 13px; color: #555; }
+
+        /* ═══ RESPONSIVE ═══ */
+        @media (max-width: 768px) {
+            nav { padding: 0 20px; }
+            .section, .resultats-blue { padding: 80px 20px; }
+            .hero { padding-top: 140px; padding-bottom: 88px; }
+            .cards-grid, .trust-grid { grid-template-columns: 1fr; gap: 16px; }
+            .stats-grid { grid-template-columns: 1fr; gap: 44px; }
+            .form-row { grid-template-columns: 1fr; }
+            .etape { gap: 20px; }
+            .partenaire-content { max-width: 100%; }
+            footer { padding: 40px 20px; }
+        }
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .trust-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 480px) {
+            .nav-logo img { width: 120px; }
+            .btn { padding: 10px 18px; font-size: 13px; }
+            .btn-lg { padding: 14px 28px; font-size: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══ NAV ═══ -->
+    <nav id="navbar">
+        <a href="#" class="nav-logo">
+            <img src="https://i.ibb.co/Xktppr7d/Logo-alacio-Agence-IA.png" alt="Alacio" width="160">
+        </a>
+        <a href="#contact" class="btn">Audit gratuit</a>
+    </nav>
+
+
+    <!-- ═══ 1. HERO ═══ -->
+    <section class="section hero bg-warm">
+        <div class="section-inner fade-in">
+            <span class="hero-badge">Automatisation WhatsApp</span>
+            <h1>Vos rendez-vous confirm&eacute;s automatiquement.<br>Vos no-shows r&eacute;duits de 30%.</h1>
+            <p class="subtitle">Alacio automatise les rappels WhatsApp de votre clinique esth&eacute;tique. Sans que vous ou votre &eacute;quipe ne fassiez quoi que ce soit.</p>
+            <a href="#contact" class="btn">Calculer mes pertes</a>
+        </div>
+    </section>
+
+    <!-- ═══ 2. PROBLEME ═══ -->
+    <section class="section probleme bg-white">
+        <div class="section-inner fade-in">
+            <h2>Chaque semaine, vous perdez des milliers d&rsquo;euros sans le savoir.</h2>
+            <span class="section-line"></span>
+            <p>Une clinique esth&eacute;tique avec 30 rendez-vous par semaine perd en moyenne 15 &agrave; 25% de son chiffre d&rsquo;affaires &agrave; cause des no-shows. Vos patients oublient. Personne ne les relance. Le cr&eacute;neau reste vide. &Agrave; 400&nbsp;&euro; la session, 5 no-shows par semaine repr&eacute;sentent 8&nbsp;000&nbsp;&euro; perdus chaque mois.</p>
+        </div>
+    </section>
+
+    <!-- ═══ 3. SOLUTION ═══ -->
+    <section class="section bg-warm">
+        <div class="section-inner">
+            <h2 class="section-title fade-in">La solution Alacio</h2>
+            <span class="section-line fade-in"></span>
+            <div class="cards-grid">
+
+                <div class="card fade-in">
+                    <svg class="card-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="6" y="6" width="36" height="36" rx="4"/>
+                        <line x1="6" y1="16" x2="42" y2="16"/>
+                        <line x1="16" y1="6" x2="16" y2="16"/>
+                        <line x1="32" y1="6" x2="32" y2="16"/>
+                        <path d="M28 28l4 4 8-8"/>
+                    </svg>
+                    <h3>Rappels automatiques</h3>
+                    <p>D&egrave;s qu&rsquo;un rendez-vous est pris, votre patient re&ccedil;oit automatiquement un message WhatsApp &agrave; J-7, J-3 et J-1. Il confirme en un clic.</p>
+                </div>
+
+                <div class="card fade-in">
+                    <svg class="card-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M26 4L10 28h12l-2 16L42 20H30l2-16z"/>
+                    </svg>
+                    <h3>R&eacute;ponse instantan&eacute;e</h3>
+                    <p>Chaque demande entrante re&ccedil;oit une r&eacute;ponse en moins de 2 minutes, 7 jours sur 7. M&ecirc;me la nuit et le weekend.</p>
+                </div>
+
+                <div class="card fade-in">
+                    <svg class="card-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M24 6C13.507 6 5 14.059 5 24s8.507 18 19 18"/>
+                        <path d="M24 42c10.493 0 19-8.059 19-18S34.493 6 24 6"/>
+                        <path d="M16 6l-5 5 5 5"/>
+                        <path d="M32 42l5-5-5-5"/>
+                    </svg>
+                    <h3>R&eacute;activation patients</h3>
+                    <p>Vos patients perdus depuis 6 mois re&ccedil;oivent automatiquement un message personnalis&eacute; pour revenir.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ 4. RESULTATS ═══ -->
+    <section class="resultats-blue">
+        <div class="section-inner">
+            <h2 class="section-title fade-in">Des r&eacute;sultats concrets</h2>
+            <span class="section-line fade-in"></span>
+            <div class="stats-grid">
+                <div class="fade-in">
+                    <div class="stat-value">-30%</div>
+                    <div class="stat-label">de no-shows d&egrave;s le premier mois</div>
+                </div>
+                <div class="fade-in">
+                    <div class="stat-value">+95%</div>
+                    <div class="stat-label">de taux d&rsquo;ouverture WhatsApp</div>
+                </div>
+                <div class="fade-in">
+                    <div class="stat-value">2 min</div>
+                    <div class="stat-label">de d&eacute;lai de r&eacute;ponse aux leads</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ 5. SOCIAL PROOF ═══ -->
+    <section class="section bg-white">
+        <div class="section-inner">
+            <h2 class="section-title fade-in">Pourquoi nous faire confiance ?</h2>
+            <span class="section-line fade-in"></span>
+            <div class="trust-grid">
+
+                <div class="trust-card fade-in">
+                    <svg class="trust-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 4L4 12v8c0 9.33 6.84 18.06 16 20 9.16-1.94 16-10.67 16-20v-8L20 4z"/>
+                        <path d="M14 20l4 4 8-8"/>
+                    </svg>
+                    <h3>API WhatsApp officielle Meta</h3>
+                    <p>Syst&egrave;me construit sur l&rsquo;infrastructure officielle de Meta. Z&eacute;ro risque de blocage.</p>
+                </div>
+
+                <div class="trust-card fade-in">
+                    <svg class="trust-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="20" cy="20" r="16"/>
+                        <path d="M20 10v10l7 4"/>
+                    </svg>
+                    <h3>Op&eacute;rationnel en 5 jours</h3>
+                    <p>De la signature &agrave; la mise en production. Votre &eacute;quipe n&rsquo;a rien &agrave; installer.</p>
+                </div>
+
+                <div class="trust-card fade-in">
+                    <svg class="trust-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="4" y="6" width="32" height="28" rx="3"/>
+                        <line x1="4" y1="14" x2="36" y2="14"/>
+                        <line x1="12" y1="6" x2="12" y2="14"/>
+                        <line x1="28" y1="6" x2="28" y2="14"/>
+                        <path d="M14 22h12M14 28h8"/>
+                    </svg>
+                    <h3>Sans engagement</h3>
+                    <p>Pas de contrat longue dur&eacute;e. Vous restez libre &agrave; tout moment.</p>
+                </div>
+
+                <div class="trust-card fade-in">
+                    <svg class="trust-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 20v-4a14 14 0 0 1 28 0v4"/>
+                        <path d="M6 20a4 4 0 0 0-2 3.5v3A4 4 0 0 0 8 30h1v-10H6z"/>
+                        <path d="M34 20a4 4 0 0 1 2 3.5v3a4 4 0 0 1-4 4h-1V20h3z"/>
+                        <path d="M32 30.5c0 3-3.58 5.5-8 5.5h-2"/>
+                    </svg>
+                    <h3>Support inclus 30 jours</h3>
+                    <p>On reste disponibles pendant tout votre premier mois pour ajuster le syst&egrave;me.</p>
+                </div>
+
+                <div class="trust-card fade-in">
+                    <svg class="trust-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="17" cy="17" r="13"/>
+                        <line x1="26.2" y1="26.2" x2="36" y2="36"/>
+                    </svg>
+                    <h3>Audit gratuit</h3>
+                    <p>On analyse vos pertes actuelles avant de vous proposer quoi que ce soit.</p>
+                </div>
+
+                <div class="trust-card fade-in">
+                    <svg class="trust-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="8" y="17" width="24" height="19" rx="3"/>
+                        <path d="M12 17v-5a8 8 0 0 1 16 0v5"/>
+                        <circle cx="20" cy="27" r="2.5"/>
+                        <line x1="20" y1="29.5" x2="20" y2="32"/>
+                    </svg>
+                    <h3>Donn&eacute;es s&eacute;curis&eacute;es</h3>
+                    <p>Aucune donn&eacute;e m&eacute;dicale trait&eacute;e. Uniquement les rappels et confirmations.</p>
+                </div>
+
+            </div>
+
+            <div class="trust-cta fade-in" style="text-align:center; margin-top:56px;">
+                <p style="font-size:17px; color:var(--text-secondary); margin-bottom:20px;">Pr&ecirc;t &agrave; r&eacute;cup&eacute;rer votre chiffre d&rsquo;affaires perdu ?</p>
+                <a href="#contact" class="btn">Je veux r&eacute;cup&eacute;rer mon CA</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ 6. POURQUOI ALACIO ═══ -->
+    <section class="section pourquoi bg-warm">
+        <div class="section-inner fade-in">
+            <h2 class="section-title">Pourquoi Alacio ?</h2>
+            <span class="section-line"></span>
+            <p>Alacio est n&eacute; d&rsquo;un constat simple. Les cliniques esth&eacute;tiques perdent en moyenne 20% de leur chiffre d&rsquo;affaires mensuel &agrave; cause de no-shows non g&eacute;r&eacute;s. Pas par manque de volont&eacute;. Par manque d&rsquo;outils adapt&eacute;s. On a construit le syst&egrave;me qu&rsquo;aucun logiciel m&eacute;dical ne propose : une automatisation compl&egrave;te, sans formation, sans friction, op&eacute;rationnelle en 5 jours.</p>
+        </div>
+    </section>
+
+    <!-- ═══ 7. COMMENT CA MARCHE ═══ -->
+    <section class="section bg-white">
+        <div class="section-inner">
+            <h2 class="section-title fade-in">Comment &ccedil;a marche</h2>
+            <span class="section-line fade-in"></span>
+            <div class="etapes-list">
+                <div class="etape fade-in">
+                    <div class="etape-num">1</div>
+                    <div class="etape-body">
+                        <h3>Audit gratuit (20 min)</h3>
+                        <p>On analyse vos pertes actuelles et on vous montre exactement ce qu&rsquo;Alacio r&eacute;cup&eacute;rerait pour votre clinique.</p>
+                    </div>
+                </div>
+                <div class="etape fade-in">
+                    <div class="etape-num">2</div>
+                    <div class="etape-body">
+                        <h3>Configuration compl&egrave;te</h3>
+                        <p>On installe et configure tout. Votre assistante ajoute juste les rendez-vous dans un tableau. Le reste est automatique.</p>
+                    </div>
+                </div>
+                <div class="etape fade-in">
+                    <div class="etape-num">3</div>
+                    <div class="etape-body">
+                        <h3>R&eacute;sultats d&egrave;s la premi&egrave;re semaine</h3>
+                        <p>Les rappels partent, les confirmations arrivent. Vous voyez la diff&eacute;rence imm&eacute;diatement.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ 8. POUR QUI ═══ -->
+    <section class="section pour-qui bg-warm">
+        <div class="section-inner fade-in">
+            <h2>Fait pour les cliniques esth&eacute;tiques ind&eacute;pendantes.</h2>
+            <span class="section-line"></span>
+            <p>Botox, fillers, laser, m&eacute;soth&eacute;rapie, peeling. Si vous g&eacute;rez entre 20 et 100 rendez-vous par semaine et que vos no-shows vous co&ucirc;tent plus que votre loyer, Alacio est fait pour vous.</p>
+        </div>
+    </section>
+
+    <!-- ═══ 9. PARTENAIRE ═══ -->
+    <section class="section partenaire bg-white">
+        <div class="section-inner fade-in">
+            <div class="partenaire-content">
+                <h2>Non, nous ne sommes pas un logiciel.<br>On est votre partenaire de croissance.</h2>
+                <span class="section-line"></span>
+                <p class="partenaire-sub">Beaucoup d&rsquo;outils promettent de r&eacute;gler vos no-shows. Aucun ne vous appelle pour s&rsquo;assurer que &ccedil;a marche.</p>
+                <ul class="check-list">
+                    <li>
+                        <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5l5 5L18 6"/></svg>
+                        Vous n&rsquo;avez rien &agrave; configurer. On s&rsquo;occupe de tout.
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5l5 5L18 6"/></svg>
+                        Si quelque chose ne fonctionne pas, on le r&egrave;gle avant que vous vous en rendiez compte.
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5l5 5L18 6"/></svg>
+                        Pas de formation. Pas de manuel. Z&eacute;ro friction.
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5l5 5L18 6"/></svg>
+                        Un interlocuteur unique, disponible, qui conna&icirc;t votre clinique.
+                    </li>
+                </ul>
+                <a href="#contact" class="btn">On travaille ensemble ?</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ 10. FORMULAIRE ═══ -->
+    <section class="section contact-section bg-warm" id="contact">
+        <div class="section-inner">
+            <h2 class="section-title fade-in">D&eacute;couvrez combien vous perdez chaque mois.</h2>
+            <span class="section-line fade-in"></span>
+            <p class="contact-subtitle fade-in">Audit gratuit de 20 minutes. On calcule vos pertes, on vous montre la solution. Sans engagement.</p>
+            <div class="form-wrap fade-in">
+                <form action="mailto:contact@alacio.fr" method="POST" enctype="text/plain">
+                    <div class="form-row">
+                        <input type="text" name="prenom" placeholder="Pr&eacute;nom" required>
+                        <input type="text" name="clinique" placeholder="Nom de la clinique" required>
+                    </div>
+                    <input type="email" name="email" placeholder="Email professionnel" required>
+                    <input type="tel" name="telephone" placeholder="T&eacute;l&eacute;phone" required>
+                    <textarea name="message" placeholder="Message (optionnel)"></textarea>
+                    <button type="submit" class="btn">Envoyer ma demande</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer>
+        <div class="footer-logo">
+            <img src="https://i.ibb.co/Xktppr7d/Logo-alacio-Agence-IA.png" alt="Alacio" width="160">
+        </div>
+        <div class="footer-brand">Alacio &mdash; Automatisation IA pour cliniques esth&eacute;tiques</div>
+        <div class="footer-links">
+            <a href="mailto:contact@alacio.fr">contact@alacio.fr</a> &middot;
+            <a href="https://alacio.fr" target="_blank" rel="noopener">alacio.fr</a> &middot;
+            <a href="tel:+33744796345">07 44 79 63 45</a>
+        </div>
+        <div class="footer-copy">&copy; 2026 Alacio &mdash; Tous droits r&eacute;serv&eacute;s</div>
+    </footer>
+
+    <script>
+        const nav = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            nav.classList.toggle('scrolled', window.scrollY > 50);
+        }, { passive: true });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    observer.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    </script>
+
+</body>
+</html>
